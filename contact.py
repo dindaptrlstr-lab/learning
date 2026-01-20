@@ -9,7 +9,9 @@ def contact_page():
     **Universitas:Universitas Muhammadiyah Semarang**
 
     📧 Email: dindaptrlstr@gmail.com 
+    
     🔗 GitHub: https://github.com/dindaptrlstr-lab
     """)
+
 
 
