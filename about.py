@@ -40,11 +40,6 @@ def show_about():
           - 0 → Air tidak layak konsumsi  
           - 1 → Air layak konsumsi  
 
-        **Jenis Permasalahan:**
-        - Supervised Learning  
-        - Binary Classification
-        """)
-
         dataset_type = "Lingkungan"
 
     elif dataset_name == "cardio_train.csv":
@@ -135,3 +130,4 @@ def show_about():
         "- Target variabel ditentukan secara otomatis atau pada menu Machine Learning.\n"
         "- Hasil evaluasi model ditampilkan pada menu Machine Learning."
     )
+
