@@ -96,18 +96,6 @@ def show_about():
     col3.metric("Jenis Dataset", dataset_type)
 
     # =========================
-    # STRUKTUR DATASET
-    # =========================
-    st.subheader("Struktur Dataset")
-
-    column_info = pd.DataFrame({
-        "Nama Kolom": df.columns,
-        "Tipe Data": df.dtypes.astype(str)
-    })
-
-    st.dataframe(column_info, use_container_width=True)
-
-    # =========================
     # CONTOH DATA
     # =========================
     st.subheader("Contoh Data (5 Baris Pertama)")
@@ -148,3 +136,4 @@ def show_about():
         "- Target variabel ditentukan secara otomatis atau pada menu Machine Learning.\n"
         "- Hasil evaluasi model ditampilkan pada menu Machine Learning."
     )
+
