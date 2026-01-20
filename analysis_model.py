@@ -32,7 +32,6 @@ def analysis_model_page():
     # =====================================================
     # JUDUL & DESKRIPSI HALAMAN
     # =====================================================
-    st.title("Analisis Model Klasifikasi (Detail Perhitungan)")
 
     st.write(
         f"Dataset: **{dataset_name}** ({dataset_type})  \n"
@@ -234,3 +233,4 @@ def analysis_model_page():
         "Pelatihan dan evaluasi model sebenarnya "
         "dilakukan pada menu **Machine Learning**."
     )
+
