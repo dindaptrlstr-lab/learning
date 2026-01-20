@@ -65,6 +65,7 @@ def dashboard_page():
 
     st.write("""
      **Insight:**
+     
     Visualisasi distribusi target menunjukkan proporsi masing-masing kelas.
     Distribusi yang tidak seimbang dapat memengaruhi performa model,
     sehingga evaluasi tidak hanya mengandalkan akurasi, tetapi juga
@@ -87,8 +88,10 @@ def dashboard_page():
 
         st.write("""
          **Insight:**
+         
         Heatmap korelasi digunakan untuk mengidentifikasi hubungan antar fitur numerik.
         Korelasi yang tinggi dapat mengindikasikan redundansi fitur,
         sedangkan korelasi rendah menunjukkan kontribusi fitur yang lebih independen
         dalam proses klasifikasi.
         """)
+
