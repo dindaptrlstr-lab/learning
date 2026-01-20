@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 
+
 def upload_page():
     st.subheader("Upload Dataset")
 
@@ -18,10 +19,49 @@ def upload_page():
     if uploaded_file is not None:
         df = pd.read_csv(uploaded_file)
 
+        # =========================
+        # RESET STATE LAMA (PENTING!)
+        # =========================
+        keys_to_reset = [
+            "best_model",
+            "scaler",
+            "feature_columns",
+            "target_col",
+            "dataset_type"
+        ]
+
+        for key in keys_to_reset:
+            if key in st.session_state:
+                del st.session_state[key]
+
+        # =========================
+        # SIMPAN DATASET
+        # =========================
         st.session_state["df"] = df
         st.session_state["dataset_name"] = uploaded_file.name
 
-        st.success("✅ Dataset berhasil dimuat")
+        # =========================
+        # TARGET & TIPE DATASET (SATU SUMBER KEBENARAN)
+        # =========================
+        if uploaded_file.name == "water_potability.csv":
+            st.session_state["target_col"] = "Potability"
+            st.session_state["dataset_type"] = "Lingkungan"
 
-        with st.expander("🔍 Lihat Contoh Data"):
+        elif uploaded_file.name == "cardio_train.csv":
+            st.session_state["target_col"] = "cardio"
+            st.session_state["dataset_type"] = "Kesehatan"
+
+        else:
+            st.error(
+                "Dataset berhasil diunggah, tetapi target belum dikenali.\n"
+                "Silakan gunakan dataset yang telah ditentukan."
+            )
+            return
+
+        # =========================
+        # FEEDBACK KE USER
+        # =========================
+        st.success("✅ Dataset berhasil dimuat dan state diperbarui")
+
+        with st.expander("🔍 Lihat 5 Baris Pertama Dataset"):
             st.dataframe(df.head(), use_container_width=True)
