@@ -1,7 +1,53 @@
 import streamlit as st
 import pandas as pd
 
+
 def show_about():
+
+    # =========================
+    # STYLE KHUSUS ABOUT PAGE
+    # =========================
+    st.markdown("""
+    <style>
+    /* Background section */
+    .about-card {
+        background-color: #E7BEF8;
+        padding: 24px;
+        border-radius: 18px;
+        margin-bottom: 24px;
+    }
+
+    /* Heading */
+    .about-title {
+        color: #F2619C;
+        font-weight: 700;
+    }
+
+    /* Highlight / Info box */
+    div[data-testid="stAlert"] {
+        background-color: #EDE986 !important;
+        color: #2E2E2E !important;
+        border-radius: 14px;
+        border: none;
+    }
+
+    /* Metric card */
+    div[data-testid="metric-container"] {
+        background-color: #93ABD9;
+        border-radius: 16px;
+        padding: 1rem;
+        color: #ffffff;
+        border: none;
+    }
+
+    /* Dataframe */
+    div[data-testid="stDataFrame"] {
+        border-radius: 16px;
+        overflow: hidden;
+        background-color: white;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
     # =========================
     # PENGAMAN (SESSION STATE)
@@ -16,7 +62,9 @@ def show_about():
     # =========================
     # DESKRIPSI DATASET
     # =========================
-    st.subheader("Informasi Umum Dataset")
+    st.markdown("<h2 class='about-title'>Informasi Umum Dataset</h2>", unsafe_allow_html=True)
+
+    st.markdown("<div class='about-card'>", unsafe_allow_html=True)
 
     if dataset_name == "water_potability.csv":
         st.markdown("""
@@ -44,7 +92,6 @@ def show_about():
         - Supervised Learning  
         - Binary Classification
         """)
-
         dataset_type = "Lingkungan"
 
     elif dataset_name == "cardio_train.csv":
@@ -72,7 +119,6 @@ def show_about():
         - Supervised Learning  
         - Binary Classification
         """)
-
         dataset_type = "Kesehatan"
 
     else:
@@ -84,10 +130,12 @@ def show_about():
         """)
         dataset_type = "Tidak diketahui"
 
+    st.markdown("</div>", unsafe_allow_html=True)
+
     # =========================
     # RINGKASAN DATASET
     # =========================
-    st.subheader("Ringkasan Dataset")
+    st.markdown("<h3 class='about-title'>Ringkasan Dataset</h3>", unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns(3)
     col1.metric("Jumlah Data", df.shape[0])
@@ -95,45 +143,37 @@ def show_about():
     col3.metric("Jenis Dataset", dataset_type)
 
     # =========================
-    # CONTOH DATA
+    # PREVIEW DATA
     # =========================
-    st.subheader("Preview Data")
+    st.markdown("<h3 class='about-title'>Preview Data</h3>", unsafe_allow_html=True)
     st.dataframe(df.head(), use_container_width=True)
 
     # =========================
-    # METODE MACHINE LEARNING
+    # METODE ML
     # =========================
-    st.subheader("Metode Machine Learning yang Digunakan")
+    st.markdown("<h3 class='about-title'>Metode Machine Learning</h3>", unsafe_allow_html=True)
 
     st.markdown("""
     Aplikasi ini menerapkan beberapa algoritma
     **Machine Learning untuk klasifikasi**, yaitu:
 
-    - **Logistic Regression**  
-    - **Decision Tree Classifier**  
-    - **Random Forest Classifier**  
-    - **Support Vector Machine (SVM)**  
-    - **CatBoost Classifier**
+    - Logistic Regression  
+    - Decision Tree  
+    - Random Forest  
+    - Support Vector Machine (SVM)  
+    - CatBoost Classifier  
 
-    Model-model tersebut digunakan untuk
-    **membandingkan performa prediksi**
-    menggunakan metrik evaluasi berikut:
-    - Accuracy  
-    - Precision  
-    - Recall  
-    - F1-Score  
-    - ROC-AUC
+    Evaluasi performa model menggunakan:
+    Accuracy, Precision, Recall, F1-Score, dan ROC-AUC.
     """)
 
     # =========================
-    # CATATAN PREPROCESSING
+    # CATATAN
     # =========================
     st.info(
         "Catatan:\n"
         "- Dataset akan melalui tahap preprocessing sebelum pemodelan.\n"
         "- Preprocessing meliputi penanganan missing value dan standarisasi fitur.\n"
-        "- Target variabel ditentukan secara otomatis atau pada menu Machine Learning.\n"
+        "- Target variabel ditentukan secara otomatis.\n"
         "- Hasil evaluasi model ditampilkan pada menu Machine Learning."
     )
-
-
