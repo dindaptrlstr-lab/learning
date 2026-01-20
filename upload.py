@@ -75,3 +75,4 @@ def upload_page():
                 df.head(),
                 use_container_width=True
             )
+            
