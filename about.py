@@ -97,7 +97,7 @@ def show_about():
     # =========================
     # CONTOH DATA
     # =========================
-    st.subheader("Contoh Data (5 Baris Pertama)")
+    st.subheader("Preview Data")
     st.dataframe(df.head(), use_container_width=True)
 
     # =========================
@@ -135,4 +135,5 @@ def show_about():
         "- Target variabel ditentukan secara otomatis atau pada menu Machine Learning.\n"
         "- Hasil evaluasi model ditampilkan pada menu Machine Learning."
     )
+
 
