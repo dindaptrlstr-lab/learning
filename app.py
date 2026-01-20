@@ -8,34 +8,45 @@ from analysis_model import analysis_model_page
 from prediction import prediction_page
 from contact import contact_page
 
+
 st.set_page_config(
     page_title="Machine Learning Classification Dashboard",
     layout="wide"
 )
 
-# SIDEBAR (HANYA DATASET)
+# ======================
+# SIDEBAR (UPLOAD DATASET)
+# ======================
 sidebar_upload()
 
-st.markdown(
-    "<h1 style='text-align:center'>Machine Learning Classification Dashboard</h1>",
-    unsafe_allow_html=True
+# ======================
+# JUDUL & DESKRIPSI UTAMA
+# ======================
+st.title("Machine Learning Classification Dashboard")
+
+st.caption(
+    "Aplikasi analisis dan klasifikasi data kesehatan dan lingkungan "
+    "menggunakan beberapa algoritma Machine Learning. "
+    "Aplikasi ini mendukung proses eksplorasi data, pelatihan model, "
+    "evaluasi performa, serta prediksi data baru secara interaktif."
 )
 
-st.markdown(
-    "<p style='text-align:center;color:gray'>Proyek Akhir UAS – Analisis Klasifikasi Berbasis Dataset Upload</p>",
-    unsafe_allow_html=True
+st.markdown("---")
+
+st.info(
+    "Proyek Akhir UAS – Mata Kuliah Machine Learning | Program Studi Sains Data"
 )
 
 # ======================
 # MENU TAB
 # ======================
 tabs = st.tabs([
-    "📘 About Dataset",
-    "📊 Dashboards",
-    "🤖 Machine Learning",
-    "🧠 Analisis Model Terbaik",
-    "🔮 Prediction App",
-    "📞 Contact Me"
+    "About Dataset",
+    "Dashboards",
+    "Machine Learning",
+    "Analisis Model Terbaik",
+    "Prediction App",
+    "Contact Me"
 ])
 
 with tabs[0]:
