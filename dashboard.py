@@ -17,7 +17,7 @@ def dashboard_page():
     dataset_type = st.session_state["dataset_type"]
     target_col = st.session_state["target_col"]
 
-    # 🔴 INI KUNCI ANTI KEYERROR
+    # 🔴 ANTI KEYERROR
     if target_col not in df.columns:
         st.error("❌ ERROR TARGET COLUMN")
         st.write("Kolom tersedia di dataset:")
@@ -25,10 +25,22 @@ def dashboard_page():
         st.write("Target yang dicari:", target_col)
         return
 
-    st.title("📊 Dashboards & Exploratory Data Analysis")
+    # =========================
+    # JUDUL & DESKRIPSI
+    # =========================
+    st.title("Dashboards & Exploratory Data Analysis")
+
+    st.write("""
+    Halaman ini menampilkan **Exploratory Data Analysis (EDA)** untuk memahami
+    karakteristik dataset sebelum dilakukan pemodelan Machine Learning.
+    Analisis dilakukan menggunakan visualisasi distribusi target
+    dan hubungan antar fitur numerik.
+    """)
+
+    st.markdown("---")
 
     # =========================
-    # METRIC AMAN
+    # METRIC
     # =========================
     total_data = len(df)
     positive_count = int(df[target_col].sum())
@@ -51,6 +63,16 @@ def dashboard_page():
     )
     st.plotly_chart(fig, use_container_width=True)
 
+    st.write("""
+     **Insight:**
+    Visualisasi distribusi target menunjukkan proporsi masing-masing kelas.
+    Distribusi yang tidak seimbang dapat memengaruhi performa model,
+    sehingga evaluasi tidak hanya mengandalkan akurasi, tetapi juga
+    precision, recall, dan F1-score.
+    """)
+
+    st.markdown("---")
+
     # =========================
     # HEATMAP KORELASI
     # =========================
@@ -62,3 +84,11 @@ def dashboard_page():
             title="Heatmap Korelasi Fitur Numerik"
         )
         st.plotly_chart(fig, use_container_width=True)
+
+        st.write("""
+         **Insight:**
+        Heatmap korelasi digunakan untuk mengidentifikasi hubungan antar fitur numerik.
+        Korelasi yang tinggi dapat mengindikasikan redundansi fitur,
+        sedangkan korelasi rendah menunjukkan kontribusi fitur yang lebih independen
+        dalam proses klasifikasi.
+        """)
