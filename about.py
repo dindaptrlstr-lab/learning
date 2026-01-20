@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 
 def show_about():
-    st.title("About Dataset")
 
     # =========================
     # PENGAMAN (SESSION STATE)
@@ -136,3 +135,4 @@ def show_about():
         "- Target variabel ditentukan secara otomatis atau pada menu Machine Learning.\n"
         "- Hasil evaluasi model ditampilkan pada menu Machine Learning."
     )
+
