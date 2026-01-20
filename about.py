@@ -125,15 +125,7 @@ def show_about():
     - ROC-AUC
     """)
 
-    # =========================
-    # CATATAN PREPROCESSING
-    # =========================
-    st.info(
-        "Catatan:\n"
-        "- Dataset akan melalui tahap preprocessing sebelum pemodelan.\n"
-        "- Preprocessing meliputi penanganan missing value dan standarisasi fitur.\n"
-        "- Target variabel ditentukan secara otomatis atau pada menu Machine Learning.\n"
-        "- Hasil evaluasi model ditampilkan pada menu Machine Learning."
     )
+
 
 
