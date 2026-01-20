@@ -31,7 +31,7 @@ def dashboard_page():
     # =========================
     # JUDUL & DESKRIPSI HALAMAN
     # =========================
-    st.title("📈 Dashboards & Exploratory Data Analysis (EDA)")
+    st.subheader("Dashboards & Exploratory Data Analysis (EDA)")
 
     st.markdown(f"""
     Halaman ini menampilkan **Exploratory Data Analysis (EDA)**  
@@ -121,3 +121,4 @@ def dashboard_page():
             "Dataset hanya memiliki satu fitur numerik, "
             "sehingga analisis korelasi tidak dapat dilakukan."
         )
+
