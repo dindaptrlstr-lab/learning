@@ -1,4 +1,4 @@
-full tambahan saran kedalam codingan ini import streamlit as st
+import streamlit as st
 import pandas as pd
 
 def sidebar_upload():
@@ -29,3 +29,4 @@ def sidebar_upload():
             return
 
         st.sidebar.success("Dataset berhasil dimuat ✅")
+
