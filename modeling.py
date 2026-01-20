@@ -2,9 +2,18 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
+# =========================
+# SKLEARN
+# =========================
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from sklearn.metrics import (
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+    confusion_matrix
+)
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
@@ -17,7 +26,7 @@ from catboost import CatBoostClassifier
 def modeling_page():
 
     # =========================
-    # PENGAMAN
+    # PENGAMAN DATASET
     # =========================
     if "df" not in st.session_state or "dataset_name" not in st.session_state:
         st.warning("Silakan upload dataset terlebih dahulu.")
@@ -28,8 +37,8 @@ def modeling_page():
 
     st.title("🤖 Machine Learning")
     st.write(
-        "Halaman ini digunakan untuk **melatih dan membandingkan model klasifikasi** "
-        "menggunakan dataset yang di-upload."
+        "Halaman ini digunakan untuk **melatih dan mengevaluasi model klasifikasi** "
+        "menggunakan pipeline Machine Learning yang lengkap."
     )
 
     # =========================
@@ -77,7 +86,7 @@ def modeling_page():
     )
 
     # =========================
-    # SCALING (untuk LR & SVM)
+    # SCALING
     # =========================
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
@@ -87,7 +96,7 @@ def modeling_page():
     st.session_state["feature_columns"] = X.columns.tolist()
 
     # =========================
-    # MODEL
+    # MODEL DEFINITIONS
     # =========================
     models = {
         "Logistic Regression": LogisticRegression(max_iter=1000),
@@ -107,9 +116,11 @@ def modeling_page():
     }
 
     results = []
+    conf_matrices = {}
+
     best_model = None
-    best_f1 = 0
     best_model_name = None
+    best_f1 = 0
 
     # =========================
     # TRAIN & EVALUATION
@@ -128,6 +139,9 @@ def modeling_page():
         prec = precision_score(y_test, y_pred, zero_division=0)
         rec = recall_score(y_test, y_pred, zero_division=0)
         f1 = f1_score(y_test, y_pred, zero_division=0)
+
+        cm = confusion_matrix(y_test, y_pred)
+        conf_matrices[name] = cm
 
         results.append({
             "Algoritma": name,
@@ -155,6 +169,29 @@ def modeling_page():
         f"(F1-Score = {best_f1:.4f})"
     )
 
+    # =========================
+    # CONFUSION MATRIX
+    # =========================
+    st.subheader("📉 Confusion Matrix")
+
+    selected_model = st.selectbox(
+        "Pilih model untuk melihat confusion matrix",
+        list(conf_matrices.keys())
+    )
+
+    st.write(f"Confusion Matrix — **{selected_model}**")
+    st.dataframe(conf_matrices[selected_model])
+
+    st.write("""
+    Confusion matrix menunjukkan jumlah prediksi benar dan salah
+    untuk masing-masing kelas. Nilai diagonal merepresentasikan
+    prediksi yang benar, sedangkan nilai di luar diagonal menunjukkan
+    kesalahan klasifikasi.
+    """)
+
+    # =========================
+    # SIMPAN MODEL TERBAIK
+    # =========================
     st.session_state["best_model"] = best_model
 
     st.info(
