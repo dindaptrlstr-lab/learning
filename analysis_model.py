@@ -1,24 +1,24 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-from scipy.special import expit  # sigmoid
+from scipy.special import expit  # sigmoid stabil numerik
 
 
 def analysis_model_page():
 
-    # =========================
+    # =====================================================
     # PENGAMAN DATASET
-    # =========================
+    # =====================================================
     if "df" not in st.session_state or "dataset_name" not in st.session_state:
-        st.warning("Silakan upload dataset terlebih dahulu.")
+        st.warning("Silakan upload dataset terlebih dahulu pada menu Upload Data.")
         return
 
     df = st.session_state["df"]
     dataset_name = st.session_state["dataset_name"]
 
-    # =========================
-    # TARGET OTOMATIS
-    # =========================
+    # =====================================================
+    # TARGET OTOMATIS BERDASARKAN DATASET
+    # =====================================================
     if dataset_name == "water_potability.csv":
         target_col = "Potability"
         dataset_type = "Lingkungan"
@@ -26,23 +26,27 @@ def analysis_model_page():
         target_col = "cardio"
         dataset_type = "Kesehatan"
     else:
-        st.error("Dataset tidak dikenali.")
+        st.error("Dataset tidak dikenali. Silakan gunakan dataset yang tersedia.")
         return
 
-    # =========================
+    # =====================================================
     # JUDUL & DESKRIPSI HALAMAN
-    # =========================
+    # =====================================================
     st.title("Analisis Model Klasifikasi (Detail Perhitungan)")
+
     st.write(
         f"Dataset: **{dataset_name}** ({dataset_type})  \n"
-        "Halaman ini menampilkan **logika dan perhitungan inti** dari setiap algoritma klasifikasi."
+        "Halaman ini menampilkan **mekanisme internal dan perhitungan inti** "
+        "dari setiap algoritma klasifikasi."
     )
 
-    st.write("""
-    Halaman ini bertujuan untuk menjelaskan **mekanisme internal algoritma**
-    Machine Learning secara **konseptual dan matematis**.
-    Perhitungan yang ditampilkan bersifat **edukatif** untuk membantu
-    pemahaman cara kerja algoritma, **bukan hasil training aktual**.
+    st.markdown("""
+    Halaman ini dirancang untuk **tujuan edukatif**,
+    yaitu menjelaskan **cara kerja algoritma Machine Learning**
+    secara **konseptual dan matematis**.
+
+    Perhitungan yang ditampilkan **bukan hasil training aktual model**,
+    melainkan simulasi sederhana untuk membantu pemahaman logika algoritma.
 
     Proses pelatihan dan evaluasi model secara nyata
     dilakukan pada menu **Machine Learning**.
@@ -50,11 +54,11 @@ def analysis_model_page():
 
     st.markdown("---")
 
-    # =========================
+    # =====================================================
     # PILIH ALGORITMA
-    # =========================
+    # =====================================================
     algo = st.selectbox(
-        "Pilih Algoritma",
+        "Pilih Algoritma Klasifikasi",
         [
             "Logistic Regression",
             "Decision Tree",
@@ -66,18 +70,23 @@ def analysis_model_page():
 
     st.markdown("---")
 
-    # =========================
+    # =====================================================
     # SAMPLE DATA NUMERIK
-    # =========================
+    # =====================================================
     numeric_df = df.select_dtypes(include="number").drop(
         columns=[target_col], errors="ignore"
     )
 
+    if numeric_df.empty:
+        st.error("Dataset tidak memiliki fitur numerik yang dapat dianalisis.")
+        return
+
+    # Ambil satu observasi untuk ilustrasi perhitungan
     X_sample = numeric_df.iloc[0].values
 
-    # =========================================================
+    # =====================================================
     # LOGISTIC REGRESSION
-    # =========================================================
+    # =====================================================
     if algo == "Logistic Regression":
         st.subheader("Logistic Regression")
 
@@ -89,8 +98,8 @@ def analysis_model_page():
         kelas = 1 if prob >= 0.5 else 0
         log_loss = -(np.log(prob) if kelas == 1 else np.log(1 - prob))
 
-        st.write("**Rumus:**  z = β₀ + β·x")
-        st.write(f"z = `{z:.4f}`")
+        st.write("**Model:**  z = β₀ + β·x")
+        st.write(f"Nilai z = `{z:.4f}`")
         st.write(f"Sigmoid(z) = `{prob:.4f}`")
         st.write(f"Prediksi Kelas = `{kelas}`")
         st.write(f"Log Loss (1 data) = `{log_loss:.4f}`")
@@ -100,9 +109,9 @@ def analysis_model_page():
             "menjadi probabilitas menggunakan fungsi sigmoid."
         )
 
-    # =========================================================
+    # =====================================================
     # DECISION TREE
-    # =========================================================
+    # =====================================================
     elif algo == "Decision Tree":
         st.subheader("Decision Tree")
 
@@ -118,52 +127,55 @@ def analysis_model_page():
         left = df[df[feature] <= threshold]
         right = df[df[feature] > threshold]
 
-        def entropy_sub(data):
+        def entropy_subset(data):
             p = data[target_col].value_counts(normalize=True)
-            return -(p * np.log2(p)).sum()
+            return -(p * np.log2(p)).sum() if len(p) > 0 else 0
 
-        ig = entropy - (
-            (len(left) / len(df)) * entropy_sub(left) +
-            (len(right) / len(df)) * entropy_sub(right)
+        information_gain = entropy - (
+            (len(left) / len(df)) * entropy_subset(left) +
+            (len(right) / len(df)) * entropy_subset(right)
         )
 
         st.write(f"**Fitur Contoh:** `{feature}`")
         st.write(f"**Threshold (Median):** `{threshold:.4f}`")
-        st.success(f"**Information Gain:** `{ig:.4f}`")
+        st.success(f"**Information Gain:** `{information_gain:.4f}`")
 
         st.info(
-            "Decision Tree memilih fitur terbaik berdasarkan "
-            "nilai Information Gain untuk memisahkan data."
+            "Decision Tree memilih fitur pemisah terbaik "
+            "berdasarkan nilai Information Gain."
         )
 
-    # =========================================================
+    # =====================================================
     # RANDOM FOREST
-    # =========================================================
+    # =====================================================
     elif algo == "Random Forest":
         st.subheader("Random Forest")
 
         n = len(df)
         bootstrap_idx = np.random.choice(df.index, size=n, replace=True)
 
-        st.write("**Bootstrap Sampling:**")
-        st.write("10 indeks pertama:", bootstrap_idx[:10])
+        st.write("**Bootstrap Sampling (10 indeks pertama):**")
+        st.write(bootstrap_idx[:10])
 
-        fake_tree_pred = np.random.choice(df[target_col].unique(), size=7)
-        vote = pd.Series(fake_tree_pred).value_counts()
+        fake_tree_predictions = np.random.choice(
+            df[target_col].unique(), size=7
+        )
 
-        st.write("**Prediksi Tiap Tree:**")
-        st.write(fake_tree_pred)
+        vote_result = pd.Series(fake_tree_predictions).value_counts()
 
-        st.success(f"Hasil Voting Mayoritas: **{vote.idxmax()}**")
+        st.write("**Prediksi dari Tiap Tree:**")
+        st.write(fake_tree_predictions)
+
+        st.success(f"Hasil Voting Mayoritas: **{vote_result.idxmax()}**")
 
         st.info(
             "Random Forest menggabungkan banyak pohon keputusan "
             "untuk meningkatkan stabilitas dan akurasi prediksi."
         )
 
-    # =========================================================
-    # SVM
-    # =========================================================
+    # =====================================================
+    # SUPPORT VECTOR MACHINE
+    # =====================================================
     elif algo == "Support Vector Machine (SVM)":
         st.subheader("Support Vector Machine (SVM)")
 
@@ -182,41 +194,43 @@ def analysis_model_page():
             "terhadap hyperplane pemisah."
         )
 
-    # =========================================================
+    # =====================================================
     # CATBOOST
-    # =========================================================
+    # =====================================================
     elif algo == "CatBoost":
         st.subheader("CatBoost")
 
-        st.write("""
-        CatBoost adalah **ensemble Gradient Boosting**
-        yang membangun pohon keputusan secara bertahap
-        untuk memperbaiki error dari model sebelumnya.
+        st.markdown("""
+        **CatBoost** adalah algoritma **Gradient Boosting**
+        yang membangun model secara bertahap,
+        dengan setiap model baru berfokus
+        memperbaiki kesalahan model sebelumnya.
         """)
 
-        initial_pred = 0.5
+        initial_prediction = 0.5
         learning_rate = 0.1
-        correction = -0.2
+        error_correction = -0.2
 
-        new_pred = initial_pred + learning_rate * correction
+        updated_prediction = initial_prediction + learning_rate * error_correction
 
-        st.write(f"Prediksi Awal: `{initial_pred}`")
-        st.write(f"Koreksi Error: `{correction}`")
-        st.write(f"Prediksi Baru: `{new_pred:.4f}`")
+        st.write(f"Prediksi Awal: `{initial_prediction}`")
+        st.write(f"Koreksi Error: `{error_correction}`")
+        st.write(f"Prediksi Baru: `{updated_prediction:.4f}`")
 
-        st.success("Prediksi diperbarui menggunakan boosting")
+        st.success("Prediksi diperbarui menggunakan mekanisme boosting.")
 
         st.info(
-            "CatBoost efektif untuk data tabular dan mampu "
-            "mengurangi overfitting dengan boosting bertahap."
+            "CatBoost efektif untuk data tabular "
+            "dan membantu mengurangi overfitting."
         )
 
-    # =========================
+    # =====================================================
     # CATATAN PENUTUP
-    # =========================
+    # =====================================================
     st.markdown("---")
     st.info(
-        "Perhitungan di atas bertujuan **edukatif** untuk memahami "
-        "mekanisme internal algoritma. Training dan evaluasi model "
-        "sebenarnya dilakukan pada menu **Machine Learning**."
+        "Perhitungan di halaman ini bersifat **edukatif** "
+        "untuk memahami mekanisme algoritma. "
+        "Pelatihan dan evaluasi model sebenarnya "
+        "dilakukan pada menu **Machine Learning**."
     )
