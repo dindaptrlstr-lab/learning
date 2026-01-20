@@ -2,13 +2,13 @@ import streamlit as st
 import pandas as pd
 
 def show_about():
-    st.title("📘 About Dataset")
+    st.title("About Dataset")
 
     # =========================
-    # PENGAMAN
+    # PENGAMAN (SESSION STATE)
     # =========================
     if "df" not in st.session_state:
-        st.warning("Silakan upload dataset terlebih dahulu.")
+        st.warning("Silakan upload dataset terlebih dahulu pada menu Upload Data.")
         return
 
     df = st.session_state["df"]
@@ -17,61 +17,78 @@ def show_about():
     # =========================
     # DESKRIPSI DATASET
     # =========================
-    st.subheader("📂 Informasi Umum Dataset")
+    st.subheader("Informasi Umum Dataset")
 
     if dataset_name == "water_potability.csv":
-        st.write("""
+        st.markdown("""
         **Water Potability Dataset** digunakan untuk
-        mengklasifikasikan apakah air **layak dikonsumsi (potable)**
-        atau **tidak layak** berdasarkan parameter kualitas air.
+        melakukan **klasifikasi kelayakan air minum**
+        berdasarkan parameter kualitas air fisik dan kimia.
 
-        **Contoh fitur utama:**
-        - pH
-        - Hardness
-        - Solids
-        - Chloramines
-        - Sulfate
-        - Conductivity
-        - Organic Carbon
-        - Trihalomethanes
-        - Turbidity
+        **Fitur utama yang digunakan:**
+        - pH  
+        - Hardness  
+        - Solids  
+        - Chloramines  
+        - Sulfate  
+        - Conductivity  
+        - Organic Carbon  
+        - Trihalomethanes  
+        - Turbidity  
 
-        **Target:**
-        - `Potability` (0 = Tidak Layak, 1 = Layak)
+        **Target Variabel:**
+        - `Potability`  
+          - 0 → Air tidak layak konsumsi  
+          - 1 → Air layak konsumsi  
+
+        **Jenis Permasalahan:**
+        - Supervised Learning  
+        - Binary Classification
         """)
 
         dataset_type = "Lingkungan"
 
     elif dataset_name == "cardio_train.csv":
-        st.write("""
+        st.markdown("""
         **Cardiovascular Disease Dataset** digunakan untuk
         memprediksi **risiko penyakit kardiovaskular**
-        berdasarkan data klinis pasien.
+        berdasarkan data klinis dan gaya hidup pasien.
 
-        **Contoh fitur utama:**
-        - Usia
-        - Jenis Kelamin
-        - Tekanan Darah
-        - Kolesterol
-        - Glukosa
-        - BMI
-        - Kebiasaan merokok
-        - Aktivitas fisik
+        **Fitur utama yang digunakan:**
+        - Usia  
+        - Jenis Kelamin  
+        - Tekanan Darah  
+        - Kolesterol  
+        - Glukosa  
+        - Indeks Massa Tubuh (BMI)  
+        - Kebiasaan Merokok  
+        - Aktivitas Fisik  
 
-        **Target:**
-        - `cardio` (0 = Tidak Berisiko, 1 = Berisiko)
+        **Target Variabel:**
+        - `cardio`  
+          - 0 → Tidak berisiko  
+          - 1 → Berisiko  
+
+        **Jenis Permasalahan:**
+        - Supervised Learning  
+        - Binary Classification
         """)
 
         dataset_type = "Kesehatan"
 
     else:
-        st.write("Dataset diunggah oleh pengguna.")
+        st.markdown("""
+        Dataset diunggah oleh pengguna.
+
+        Informasi target dan tipe permasalahan
+        akan ditentukan pada tahap **Machine Learning**.
+        """)
         dataset_type = "Tidak diketahui"
 
     # =========================
     # RINGKASAN DATASET
     # =========================
-    st.subheader("📊 Ringkasan Dataset")
+    st.subheader("Ringkasan Dataset")
 
     col1, col2, col3 = st.columns(3)
     col1.metric("Jumlah Data", df.shape[0])
@@ -79,9 +96,9 @@ def show_about():
     col3.metric("Jenis Dataset", dataset_type)
 
     # =========================
-    # INFORMASI KOLOM
+    # STRUKTUR DATASET
     # =========================
-    st.subheader("🧱 Struktur Dataset")
+    st.subheader("Struktur Dataset")
 
     column_info = pd.DataFrame({
         "Nama Kolom": df.columns,
@@ -93,33 +110,41 @@ def show_about():
     # =========================
     # CONTOH DATA
     # =========================
-    st.subheader("🔍 Contoh Data")
+    st.subheader("Contoh Data (5 Baris Pertama)")
     st.dataframe(df.head(), use_container_width=True)
 
     # =========================
     # METODE MACHINE LEARNING
     # =========================
-    st.subheader("🤖 Metode Machine Learning yang Digunakan")
+    st.subheader("Metode Machine Learning yang Digunakan")
 
     st.markdown("""
-    Model klasifikasi yang digunakan dalam aplikasi ini:
+    Aplikasi ini menerapkan beberapa algoritma
+    **Machine Learning untuk klasifikasi**, yaitu:
 
-    - **Logistic Regression**
-    - **Decision Tree**
-    - **Random Forest**
-    - **Support Vector Machine (SVM)**
+    - **Logistic Regression**  
+    - **Decision Tree Classifier**  
+    - **Random Forest Classifier**  
+    - **Support Vector Machine (SVM)**  
     - **CatBoost Classifier**
 
-    Model-model ini digunakan untuk membandingkan performa prediksi
-    berdasarkan akurasi, precision, recall, F1-score, dan ROC-AUC.
+    Model-model tersebut digunakan untuk
+    **membandingkan performa prediksi**
+    menggunakan metrik evaluasi berikut:
+    - Accuracy  
+    - Precision  
+    - Recall  
+    - F1-Score  
+    - ROC-AUC
     """)
 
     # =========================
-    # CATATAN
+    # CATATAN PREPROCESSING
     # =========================
     st.info(
         "Catatan:\n"
-        "- Dataset dipilih otomatis berdasarkan file yang di-upload.\n"
-        "- Target klasifikasi akan digunakan pada menu **Machine Learning**.\n"
-        "- Data akan melalui preprocessing sebelum pemodelan."
+        "- Dataset akan melalui tahap preprocessing sebelum pemodelan.\n"
+        "- Preprocessing meliputi penanganan missing value dan standarisasi fitur.\n"
+        "- Target variabel ditentukan secara otomatis atau pada menu Machine Learning.\n"
+        "- Hasil evaluasi model ditampilkan pada menu Machine Learning."
     )
