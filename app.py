@@ -32,90 +32,100 @@ section[data-testid="stSidebar"] {
 """, unsafe_allow_html=True)
 
 # ======================
-# GLOBAL UI / UX STYLE (COLOR PALETTE)
+# GLOBAL UI / UX STYLE (PALETTE BARU)
 # ======================
 st.markdown("""
 <style>
 
-/* ===== GLOBAL BACKGROUND ===== */
+/* ===== GLOBAL ===== */
 .stApp {
-    background-color: #F3EEF1;
+    background-color: #E7BEF8; /* Soft Lilac */
     color: #2E2E2E;
     font-family: 'Inter', 'Segoe UI', sans-serif;
 }
 
 /* ===== HEADER ===== */
 h1, h2, h3 {
-    color: #D56989;
+    color: #F2619C; /* Raspberry Rose */
     font-weight: 700;
 }
 
 /* ===== TEXT ===== */
 p, span, label {
-    color: #444444;
+    color: #333333;
 }
 
-/* ===== INFO / ALERT BOX ===== */
+/* ===== INFO / ALERT ===== */
 div[data-testid="stAlert"] {
-    background-color: #C2DC80 !important;
+    background-color: #EDE986 !important; /* Lemon Cream */
     color: #2E2E2E !important;
-    border-radius: 14px;
+    border-radius: 16px;
+    border: none;
+}
+
+/* ===== SUCCESS ===== */
+div[data-testid="stSuccess"] {
+    background-color: #93ABD9 !important; /* Blueberry Milk */
+    color: #ffffff !important;
+    border-radius: 16px;
     border: none;
 }
 
 /* ===== BUTTON ===== */
 button[kind="primary"] {
-    background-color: #EA9CAF !important;
+    background-color: #F2619C !important;
     color: white !important;
-    border-radius: 10px;
+    border-radius: 12px;
     border: none;
-    padding: 0.6rem 1.2rem;
+    padding: 0.6rem 1.4rem;
     font-weight: 600;
 }
 
 button[kind="primary"]:hover {
-    background-color: #D56989 !important;
+    background-color: #93ABD9 !important;
     color: white !important;
 }
 
 /* ===== FILE UPLOADER ===== */
 div[data-testid="stFileUploader"] {
     background-color: white;
-    border-radius: 14px;
+    border-radius: 16px;
     padding: 1rem;
-    border: 1px dashed #D56989;
+    border: 1.5px dashed #F2619C;
 }
 
 /* ===== TABS ===== */
 button[data-baseweb="tab"] {
     font-weight: 600;
-    color: #D56989;
+    color: #F2619C;
 }
 
 button[data-baseweb="tab"][aria-selected="true"] {
-    border-bottom: 3px solid #D56989;
-    color: #D56989;
+    border-bottom: 3px solid #F2619C;
+    color: #F2619C;
 }
 
 /* ===== DATAFRAME ===== */
 div[data-testid="stDataFrame"] {
-    border-radius: 14px;
+    background-color: white;
+    border-radius: 16px;
     overflow: hidden;
 }
 
 /* ===== METRIC CARD ===== */
 div[data-testid="metric-container"] {
-    background-color: white;
-    border-radius: 16px;
+    background-color: #93ABD9;
+    color: white;
+    border-radius: 18px;
     padding: 1rem;
-    border: 1px solid #EA9CAF;
+    border: none;
 }
 
 </style>
 """, unsafe_allow_html=True)
 
 # ======================
-# HEADER UTAMA (DESIGNER MODE)
+# HEADER UTAMA
 # ======================
 st.title("Machine Learning Classification Dashboard")
 
@@ -124,10 +134,7 @@ st.caption(
     "menggunakan beberapa algoritma Machine Learning."
 )
 
-st.markdown(
-    "<div style='height:8px'></div>",
-    unsafe_allow_html=True
-)
+st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
 
 st.info(
     "Proyek Akhir UAS – Mata Kuliah Machine Learning | "
@@ -137,7 +144,7 @@ st.info(
 st.markdown("---")
 
 # ======================
-# TAB NAVIGASI (ALUR ML)
+# TAB NAVIGASI
 # ======================
 tabs = st.tabs([
     "Upload Dataset",
