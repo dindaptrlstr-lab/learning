@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from scipy.special import expit  # sigmoid
 
+
 def analysis_model_page():
 
     # =========================
@@ -28,14 +29,30 @@ def analysis_model_page():
         st.error("Dataset tidak dikenali.")
         return
 
-    st.title("🧠 Analisis Model Klasifikasi (Detail Perhitungan)")
+    # =========================
+    # JUDUL & DESKRIPSI HALAMAN
+    # =========================
+    st.title("Analisis Model Klasifikasi (Detail Perhitungan)")
     st.write(
-        f"Dataset: **{dataset_name}**  \n"
+        f"Dataset: **{dataset_name}** ({dataset_type})  \n"
         "Halaman ini menampilkan **logika dan perhitungan inti** dari setiap algoritma klasifikasi."
     )
 
+    st.write("""
+    Halaman ini bertujuan untuk menjelaskan **mekanisme internal algoritma**
+    Machine Learning secara **konseptual dan matematis**.
+    Perhitungan yang ditampilkan bersifat **edukatif** untuk membantu
+    pemahaman cara kerja algoritma, **bukan hasil training aktual**.
+
+    Proses pelatihan dan evaluasi model secara nyata
+    dilakukan pada menu **Machine Learning**.
+    """)
+
     st.markdown("---")
 
+    # =========================
+    # PILIH ALGORITMA
+    # =========================
     algo = st.selectbox(
         "Pilih Algoritma",
         [
@@ -49,14 +66,20 @@ def analysis_model_page():
 
     st.markdown("---")
 
-    numeric_df = df.select_dtypes(include="number").drop(columns=[target_col], errors="ignore")
+    # =========================
+    # SAMPLE DATA NUMERIK
+    # =========================
+    numeric_df = df.select_dtypes(include="number").drop(
+        columns=[target_col], errors="ignore"
+    )
+
     X_sample = numeric_df.iloc[0].values
 
     # =========================================================
     # LOGISTIC REGRESSION
     # =========================================================
     if algo == "Logistic Regression":
-        st.subheader("📌 Logistic Regression")
+        st.subheader("Logistic Regression")
 
         beta = np.ones(len(X_sample)) * 0.1
         beta_0 = 0.1
@@ -72,11 +95,16 @@ def analysis_model_page():
         st.write(f"Prediksi Kelas = `{kelas}`")
         st.write(f"Log Loss (1 data) = `{log_loss:.4f}`")
 
+        st.info(
+            "Logistic Regression mengubah kombinasi linear fitur "
+            "menjadi probabilitas menggunakan fungsi sigmoid."
+        )
+
     # =========================================================
     # DECISION TREE
     # =========================================================
     elif algo == "Decision Tree":
-        st.subheader("📌 Decision Tree")
+        st.subheader("Decision Tree")
 
         class_prob = df[target_col].value_counts(normalize=True)
         entropy = -(class_prob * np.log2(class_prob)).sum()
@@ -95,19 +123,24 @@ def analysis_model_page():
             return -(p * np.log2(p)).sum()
 
         ig = entropy - (
-            (len(left)/len(df)) * entropy_sub(left) +
-            (len(right)/len(df)) * entropy_sub(right)
+            (len(left) / len(df)) * entropy_sub(left) +
+            (len(right) / len(df)) * entropy_sub(right)
         )
 
         st.write(f"**Fitur Contoh:** `{feature}`")
         st.write(f"**Threshold (Median):** `{threshold:.4f}`")
         st.success(f"**Information Gain:** `{ig:.4f}`")
 
+        st.info(
+            "Decision Tree memilih fitur terbaik berdasarkan "
+            "nilai Information Gain untuk memisahkan data."
+        )
+
     # =========================================================
     # RANDOM FOREST
     # =========================================================
     elif algo == "Random Forest":
-        st.subheader("📌 Random Forest")
+        st.subheader("Random Forest")
 
         n = len(df)
         bootstrap_idx = np.random.choice(df.index, size=n, replace=True)
@@ -123,11 +156,16 @@ def analysis_model_page():
 
         st.success(f"Hasil Voting Mayoritas: **{vote.idxmax()}**")
 
+        st.info(
+            "Random Forest menggabungkan banyak pohon keputusan "
+            "untuk meningkatkan stabilitas dan akurasi prediksi."
+        )
+
     # =========================================================
     # SVM
     # =========================================================
     elif algo == "Support Vector Machine (SVM)":
-        st.subheader("📌 Support Vector Machine (SVM)")
+        st.subheader("Support Vector Machine (SVM)")
 
         w = np.ones(len(X_sample)) * 0.5
         b = -0.2
@@ -139,16 +177,21 @@ def analysis_model_page():
         st.write(f"f(x) = `{decision_value:.4f}`")
         st.success(f"Hasil Klasifikasi: **{kelas}**")
 
+        st.info(
+            "SVM mengklasifikasikan data berdasarkan posisi relatif "
+            "terhadap hyperplane pemisah."
+        )
+
     # =========================================================
     # CATBOOST
     # =========================================================
     elif algo == "CatBoost":
-        st.subheader("📌 CatBoost")
+        st.subheader("CatBoost")
 
         st.write("""
         CatBoost adalah **ensemble Gradient Boosting**
         yang membangun pohon keputusan secara bertahap
-        untuk memperbaiki error sebelumnya.
+        untuk memperbaiki error dari model sebelumnya.
         """)
 
         initial_pred = 0.5
@@ -163,9 +206,17 @@ def analysis_model_page():
 
         st.success("Prediksi diperbarui menggunakan boosting")
 
+        st.info(
+            "CatBoost efektif untuk data tabular dan mampu "
+            "mengurangi overfitting dengan boosting bertahap."
+        )
+
+    # =========================
+    # CATATAN PENUTUP
+    # =========================
     st.markdown("---")
     st.info(
         "Perhitungan di atas bertujuan **edukatif** untuk memahami "
         "mekanisme internal algoritma. Training dan evaluasi model "
-        "dilakukan pada menu **Machine Learning**."
+        "sebenarnya dilakukan pada menu **Machine Learning**."
     )
