@@ -3,7 +3,22 @@ import pandas as pd
 import numpy as np
 
 def prediction_page():
-    st.title("🔮 Prediction App")
+    st.title("Prediction App")
+
+    # =========================
+    # DESKRIPSI HALAMAN (DITAMBAHKAN)
+    # =========================
+    st.write("""
+    Halaman ini digunakan untuk melakukan **prediksi data baru**
+    menggunakan **model terbaik** yang diperoleh dari proses training sebelumnya.
+    Model dipilih berdasarkan performa evaluasi (F1-Score) pada menu
+    **Machine Learning**.
+    
+    Prediksi dilakukan pada data input yang diambil dari dataset
+    yang di-upload, sehingga pengguna dapat memahami
+    bagaimana model memberikan hasil klasifikasi.
+    """)
+    st.markdown("---")
 
     # =========================
     # PENGAMAN
@@ -50,7 +65,7 @@ def prediction_page():
     # =========================
     # INPUT OTOMATIS
     # =========================
-    st.subheader("📥 Data Input (Otomatis)")
+    st.subheader("Data Input (Otomatis)")
 
     input_df = df[feature_columns].iloc[-1:].copy()
 
@@ -76,7 +91,7 @@ def prediction_page():
         prediction = model.predict(input_processed)[0]
 
         st.markdown("---")
-        st.subheader("📊 Hasil Prediksi")
+        st.subheader("Hasil Prediksi")
 
         if prediction == 1:
             st.success(f"✅ **{positive_label}**")
@@ -88,6 +103,9 @@ def prediction_page():
             "berdasarkan evaluasi F1-Score pada menu Machine Learning."
         )
 
+    # =========================
+    # CATATAN
+    # =========================
     st.markdown("---")
     st.info(
         "Catatan:\n"
