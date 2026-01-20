@@ -43,12 +43,8 @@ def analysis_model_page():
     st.markdown("""
     Halaman ini dirancang untuk **tujuan edukatif**,
     yaitu menjelaskan **cara kerja algoritma Machine Learning**
-    secara **konseptual dan matematis**.
-
-    Perhitungan yang ditampilkan **bukan hasil training aktual model**,
-    melainkan simulasi sederhana untuk membantu pemahaman logika algoritma.
-
-    Proses pelatihan dan evaluasi model secara nyata
+    secara **konseptual dan matematis**. Perhitungan yang ditampilkan **bukan hasil training aktual model**,
+    melainkan simulasi sederhana untuk membantu pemahaman logika algoritma. Proses pelatihan dan evaluasi model secara nyata
     dilakukan pada menu **Machine Learning**.
     """)
 
@@ -234,4 +230,5 @@ def analysis_model_page():
         "Pelatihan dan evaluasi model sebenarnya "
         "dilakukan pada menu **Machine Learning**."
     )
+
 
