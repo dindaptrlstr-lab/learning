@@ -29,7 +29,7 @@ def modeling_page():
     # PENGAMAN DATASET
     # =========================
     if "df" not in st.session_state or "dataset_name" not in st.session_state:
-        st.warning("Silakan upload dataset terlebih dahulu.")
+        st.warning("Silakan upload dataset terlebih dahulu melalui sidebar.")
         return
 
     df = st.session_state["df"]
@@ -39,20 +39,18 @@ def modeling_page():
     # JUDUL & DESKRIPSI HALAMAN
     # =========================
     st.title("Machine Learning")
-    st.write(
-        "Halaman ini digunakan untuk **melatih dan mengevaluasi model klasifikasi** "
-        "menggunakan pipeline Machine Learning yang lengkap."
-    )
 
-    st.write("""
-    Pada halaman ini dilakukan **pelatihan (training) dan evaluasi model Machine Learning**
-    menggunakan beberapa algoritma klasifikasi, yaitu **Logistic Regression,
-    Decision Tree, Random Forest, Support Vector Machine (SVM), dan CatBoost**.
+    st.markdown("""
+    Halaman ini digunakan untuk melakukan **pelatihan (training)**
+    dan **evaluasi model klasifikasi** menggunakan pipeline
+    **Machine Learning end-to-end**.
 
-    Dataset dibagi menjadi **data latih (training)** dan **data uji (testing)**
-    untuk menghindari overfitting. Evaluasi model dilakukan menggunakan
-    metrik **Accuracy, Precision, Recall, dan F1-Score**, serta dilengkapi
-    dengan **Confusion Matrix** untuk menganalisis kesalahan prediksi.
+    Proses yang dilakukan meliputi:
+    - Preprocessing data
+    - Pembagian data latih dan data uji
+    - Pelatihan beberapa algoritma klasifikasi
+    - Evaluasi performa model
+    - Pemilihan model terbaik
     """)
 
     st.markdown("---")
@@ -62,29 +60,39 @@ def modeling_page():
     # =========================
     if dataset_name == "water_potability.csv":
         target_col = "Potability"
+        dataset_type = "Lingkungan"
     elif dataset_name == "cardio_train.csv":
         target_col = "cardio"
+        dataset_type = "Kesehatan"
     else:
         st.error("Dataset tidak dikenali.")
         return
 
+    st.write(f"**Dataset:** `{dataset_name}` ({dataset_type})")
     st.write(f"**Target Klasifikasi:** `{target_col}`")
+
+    # Simpan target & tipe dataset untuk halaman lain
+    st.session_state["target_col"] = target_col
+    st.session_state["dataset_type"] = dataset_type
+
+    st.markdown("---")
 
     # =========================
     # PREPROCESSING
     # =========================
+    st.subheader("Preprocessing Data")
+
     df_model = df.copy()
 
-    # Paksa semua kolom numerik
+    # Pastikan seluruh kolom numerik
     for col in df_model.columns:
         df_model[col] = pd.to_numeric(df_model[col], errors="coerce")
 
-    # Hapus missing value
-    before = len(df_model)
+    before_rows = len(df_model)
     df_model = df_model.dropna()
-    after = len(df_model)
+    after_rows = len(df_model)
 
-    st.info(f"Data dibersihkan: {before - after} baris dibuang")
+    st.info(f"Data dibersihkan: **{before_rows - after_rows}** baris dibuang karena missing value.")
 
     # Pisahkan fitur & target
     X = df_model.drop(columns=[target_col])
@@ -102,17 +110,18 @@ def modeling_page():
     )
 
     # =========================
-    # SCALING
+    # FEATURE SCALING
     # =========================
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
 
+    # Simpan scaler & fitur untuk prediksi
     st.session_state["scaler"] = scaler
     st.session_state["feature_columns"] = X.columns.tolist()
 
     # =========================
-    # MODEL DEFINITIONS
+    # DEFINISI MODEL
     # =========================
     models = {
         "Logistic Regression": LogisticRegression(max_iter=1000),
@@ -121,13 +130,16 @@ def modeling_page():
             n_estimators=100,
             random_state=42
         ),
-        "SVM": SVC(probability=True, random_state=42),
+        "Support Vector Machine (SVM)": SVC(
+            probability=True,
+            random_state=42
+        ),
         "CatBoost": CatBoostClassifier(
             iterations=200,
             learning_rate=0.1,
             depth=6,
-            verbose=0,
-            random_state=42
+            random_state=42,
+            verbose=0
         )
     }
 
@@ -139,12 +151,14 @@ def modeling_page():
     best_f1 = 0
 
     # =========================
-    # TRAIN & EVALUATION
+    # TRAINING & EVALUATION
     # =========================
+    st.subheader("Training & Evaluasi Model")
+
     for name, model in models.items():
 
-        # Scaling hanya untuk model tertentu
-        if name in ["Logistic Regression", "SVM"]:
+        # Scaling hanya untuk model berbasis jarak / linear
+        if name in ["Logistic Regression", "Support Vector Machine (SVM)"]:
             model.fit(X_train_scaled, y_train)
             y_pred = model.predict(X_test_scaled)
         else:
@@ -156,15 +170,14 @@ def modeling_page():
         rec = recall_score(y_test, y_pred, zero_division=0)
         f1 = f1_score(y_test, y_pred, zero_division=0)
 
-        cm = confusion_matrix(y_test, y_pred)
-        conf_matrices[name] = cm
+        conf_matrices[name] = confusion_matrix(y_test, y_pred)
 
         results.append({
             "Algoritma": name,
             "Accuracy (%)": round(acc * 100, 2),
             "Precision (%)": round(prec * 100, 2),
             "Recall (%)": round(rec * 100, 2),
-            "F1-Score (%)": round(f1 * 100, 2),
+            "F1-Score (%)": round(f1 * 100, 2)
         })
 
         if f1 > best_f1:
@@ -175,7 +188,7 @@ def modeling_page():
     results_df = pd.DataFrame(results)
 
     # =========================
-    # OUTPUT HASIL EVALUASI
+    # HASIL EVALUASI
     # =========================
     st.subheader("Hasil Evaluasi Model")
     st.dataframe(results_df, use_container_width=True)
@@ -198,11 +211,10 @@ def modeling_page():
     st.write(f"Confusion Matrix — **{selected_model}**")
     st.dataframe(conf_matrices[selected_model])
 
-    st.write("""
-    Confusion matrix menunjukkan jumlah prediksi benar dan salah
-    untuk masing-masing kelas. Nilai diagonal merepresentasikan
-    prediksi yang benar, sedangkan nilai di luar diagonal menunjukkan
-    kesalahan klasifikasi.
+    st.markdown("""
+    **Penjelasan:**
+    - Nilai diagonal menunjukkan prediksi yang benar
+    - Nilai di luar diagonal menunjukkan kesalahan klasifikasi
     """)
 
     # =========================
@@ -211,6 +223,6 @@ def modeling_page():
     st.session_state["best_model"] = best_model
 
     st.info(
-        "Model terbaik disimpan dan akan digunakan "
-        "pada menu **Prediction App**."
+        "Model terbaik telah disimpan dan "
+        "akan digunakan pada menu **Prediction App**."
     )
