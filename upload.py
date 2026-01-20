@@ -17,7 +17,15 @@ def upload_page():
     )
 
     if uploaded_file is not None:
-        df = pd.read_csv(uploaded_file)
+
+        # =========================
+        # BACA CSV (AUTO DELIMITER)
+        # =========================
+        try:
+            df = pd.read_csv(uploaded_file, sep=None, engine="python")
+        except Exception:
+            st.error("❌ Dataset gagal dibaca. Pastikan format CSV benar.")
+            return
 
         # =========================
         # RESET STATE LAMA (PENTING!)
@@ -41,7 +49,7 @@ def upload_page():
         st.session_state["dataset_name"] = uploaded_file.name
 
         # =========================
-        # TARGET & TIPE DATASET (SATU SUMBER KEBENARAN)
+        # TARGET & TIPE DATASET
         # =========================
         if uploaded_file.name == "water_potability.csv":
             st.session_state["target_col"] = "Potability"
@@ -52,11 +60,10 @@ def upload_page():
             st.session_state["dataset_type"] = "Kesehatan"
 
         else:
-            st.error(
-                "Dataset berhasil diunggah, tetapi target belum dikenali.\n"
-                "Silakan gunakan dataset yang telah ditentukan."
+            st.warning(
+                "Dataset berhasil dimuat, tetapi target belum dikenali. "
+                "Silakan pastikan struktur dataset sesuai."
             )
-            return
 
         # =========================
         # FEEDBACK KE USER
@@ -64,4 +71,7 @@ def upload_page():
         st.success("✅ Dataset berhasil dimuat dan state diperbarui")
 
         with st.expander("🔍 Lihat 5 Baris Pertama Dataset"):
-            st.dataframe(df.head(), use_container_width=True)
+            st.dataframe(
+                df.head(),
+                use_container_width=True
+            )
