@@ -1,4 +1,4 @@
-ubah pake color pallate ini import streamlit as st
+import streamlit as st
 import pandas as pd
 
 def show_about():
@@ -135,4 +135,5 @@ def show_about():
         "- Target variabel ditentukan secara otomatis atau pada menu Machine Learning.\n"
         "- Hasil evaluasi model ditampilkan pada menu Machine Learning."
     )
+
 
