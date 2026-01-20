@@ -1,4 +1,8 @@
 import streamlit as st
+
+# ======================
+# IMPORT HALAMAN & SIDEBAR
+# ======================
 from sidebar import sidebar_upload
 
 from about import show_about
@@ -9,6 +13,9 @@ from prediction import prediction_page
 from contact import contact_page
 
 
+# ======================
+# KONFIGURASI HALAMAN
+# ======================
 st.set_page_config(
     page_title="Machine Learning Classification Dashboard",
     layout="wide"
@@ -34,21 +41,34 @@ st.caption(
 st.markdown("---")
 
 st.info(
-    "Proyek Akhir UAS – Mata Kuliah Machine Learning | Program Studi Sains Data"
+    "Proyek Akhir UAS – Mata Kuliah Machine Learning | "
+    "Program Studi Sains Data"
 )
 
 # ======================
-# MENU TAB
+# PENGAMAN GLOBAL DATASET (OPSIONAL TAPI AMAN)
+# ======================
+if "df" not in st.session_state:
+    st.warning(
+        "Silakan upload dataset terlebih dahulu melalui sidebar "
+        "untuk mengakses seluruh fitur aplikasi."
+    )
+
+# ======================
+# MENU TAB APLIKASI
 # ======================
 tabs = st.tabs([
     "About Dataset",
     "Dashboards",
     "Machine Learning",
-    "Analisis Model Terbaik",
+    "Analisis Mekanisme Model",
     "Prediction App",
     "Contact Me"
 ])
 
+# ======================
+# ISI TIAP TAB
+# ======================
 with tabs[0]:
     show_about()
 
