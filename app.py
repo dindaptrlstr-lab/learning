@@ -1,10 +1,9 @@
 import streamlit as st
 
 # ======================
-# IMPORT HALAMAN & SIDEBAR
+# IMPORT HALAMAN
 # ======================
-from sidebar import sidebar_upload
-
+from upload import upload_page
 from about import show_about
 from dashboard import dashboard_page
 from modeling import modeling_page
@@ -22,20 +21,25 @@ st.set_page_config(
 )
 
 # ======================
-# SIDEBAR (UPLOAD DATASET)
+# HILANGKAN SIDEBAR TOTAL (CSS)
 # ======================
-sidebar_upload()
+st.markdown("""
+<style>
+section[data-testid="stSidebar"] {
+    display: none;
+}
+</style>
+""", unsafe_allow_html=True)
+
 
 # ======================
-# JUDUL & DESKRIPSI UTAMA
+# HEADER UTAMA
 # ======================
 st.title("Machine Learning Classification Dashboard")
 
 st.caption(
-    "Aplikasi analisis dan klasifikasi data kesehatan dan lingkungan "
-    "menggunakan beberapa algoritma Machine Learning. "
-    "Aplikasi ini mendukung proses eksplorasi data, pelatihan model, "
-    "evaluasi performa, serta prediksi data baru secara interaktif."
+    "Dashboard analisis dan klasifikasi data kesehatan dan lingkungan "
+    "menggunakan beberapa algoritma Machine Learning."
 )
 
 st.markdown("---")
@@ -46,43 +50,38 @@ st.info(
 )
 
 # ======================
-# PENGAMAN GLOBAL DATASET (OPSIONAL TAPI AMAN)
-# ======================
-if "df" not in st.session_state:
-    st.warning(
-        "Silakan upload dataset terlebih dahulu melalui sidebar "
-        "untuk mengakses seluruh fitur aplikasi."
-    )
-
-# ======================
-# MENU TAB APLIKASI
+# TAB NAVIGASI (ALUR ML)
 # ======================
 tabs = st.tabs([
+    "Upload Dataset",
     "About Dataset",
-    "Dashboards",
+    "Exploratory Data Analysis",
     "Machine Learning",
-    "Analisis Mekanisme Model",
-    "Prediction App",
-    "Contact Me"
+    "Analisis Model",
+    "Prediction",
+    "Contact"
 ])
 
 # ======================
-# ISI TIAP TAB
+# ISI TAB
 # ======================
 with tabs[0]:
-    show_about()
+    upload_page()
 
 with tabs[1]:
-    dashboard_page()
+    show_about()
 
 with tabs[2]:
-    modeling_page()
+    dashboard_page()
 
 with tabs[3]:
-    analysis_model_page()
+    modeling_page()
 
 with tabs[4]:
-    prediction_page()
+    analysis_model_page()
 
 with tabs[5]:
+    prediction_page()
+
+with tabs[6]:
     contact_page()
