@@ -35,11 +35,27 @@ def modeling_page():
     df = st.session_state["df"]
     dataset_name = st.session_state["dataset_name"]
 
-    st.title("🤖 Machine Learning")
+    # =========================
+    # JUDUL & DESKRIPSI HALAMAN
+    # =========================
+    st.title("Machine Learning")
     st.write(
         "Halaman ini digunakan untuk **melatih dan mengevaluasi model klasifikasi** "
         "menggunakan pipeline Machine Learning yang lengkap."
     )
+
+    st.write("""
+    Pada halaman ini dilakukan **pelatihan (training) dan evaluasi model Machine Learning**
+    menggunakan beberapa algoritma klasifikasi, yaitu **Logistic Regression,
+    Decision Tree, Random Forest, Support Vector Machine (SVM), dan CatBoost**.
+
+    Dataset dibagi menjadi **data latih (training)** dan **data uji (testing)**
+    untuk menghindari overfitting. Evaluasi model dilakukan menggunakan
+    metrik **Accuracy, Precision, Recall, dan F1-Score**, serta dilengkapi
+    dengan **Confusion Matrix** untuk menganalisis kesalahan prediksi.
+    """)
+
+    st.markdown("---")
 
     # =========================
     # TARGET OTOMATIS
@@ -59,7 +75,7 @@ def modeling_page():
     # =========================
     df_model = df.copy()
 
-    # Paksa numerik
+    # Paksa semua kolom numerik
     for col in df_model.columns:
         df_model[col] = pd.to_numeric(df_model[col], errors="coerce")
 
@@ -68,7 +84,7 @@ def modeling_page():
     df_model = df_model.dropna()
     after = len(df_model)
 
-    st.info(f"🧹 Data dibersihkan: {before - after} baris dibuang")
+    st.info(f"Data dibersihkan: {before - after} baris dibuang")
 
     # Pisahkan fitur & target
     X = df_model.drop(columns=[target_col])
@@ -159,20 +175,20 @@ def modeling_page():
     results_df = pd.DataFrame(results)
 
     # =========================
-    # OUTPUT
+    # OUTPUT HASIL EVALUASI
     # =========================
-    st.subheader("📊 Hasil Evaluasi Model")
+    st.subheader("Hasil Evaluasi Model")
     st.dataframe(results_df, use_container_width=True)
 
     st.success(
-        f"🏆 Model Terbaik: **{best_model_name}** "
+        f"Model Terbaik: **{best_model_name}** "
         f"(F1-Score = {best_f1:.4f})"
     )
 
     # =========================
     # CONFUSION MATRIX
     # =========================
-    st.subheader("📉 Confusion Matrix")
+    st.subheader("Confusion Matrix")
 
     selected_model = st.selectbox(
         "Pilih model untuk melihat confusion matrix",
