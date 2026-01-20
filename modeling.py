@@ -5,7 +5,11 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import (
-    accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+    confusion_matrix
 )
 
 from sklearn.linear_model import LogisticRegression
@@ -31,18 +35,18 @@ def modeling_page():
     dataset_type = st.session_state["dataset_type"]
 
     # =========================
-    # VALIDASI TARGET (INI KUNCI!)
+    # VALIDASI TARGET
     # =========================
     if target_col not in df.columns:
         st.error("❌ Target kolom tidak ditemukan pada dataset.")
         st.write("Kolom tersedia:", list(df.columns))
         st.write("Target yang dicari:", target_col)
-        st.stop()  # ⬅️ PENTING: STOP TOTAL
+        st.stop()
 
     # =========================
-    # JUDUL
+    # HEADER
     # =========================
-    st..subheader ("Machine Learning")
+    st.subheader("Machine Learning")
     st.write(f"Jenis Dataset: **{dataset_type}**")
     st.write(f"Target Klasifikasi: **{target_col}**")
     st.markdown("---")
@@ -52,7 +56,6 @@ def modeling_page():
     # =========================
     df_model = df.copy()
 
-    # Pastikan numerik
     for col in df_model.columns:
         df_model[col] = pd.to_numeric(df_model[col], errors="coerce")
 
@@ -63,7 +66,7 @@ def modeling_page():
     st.info(f"Data dibersihkan: {before - after} baris dibuang")
 
     # =========================
-    # SPLIT FITUR & TARGET (AMAN)
+    # SPLIT FITUR & TARGET
     # =========================
     X = df_model.drop(columns=[target_col], errors="ignore")
     y = df_model[target_col]
@@ -76,7 +79,8 @@ def modeling_page():
     # TRAIN TEST SPLIT
     # =========================
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y,
+        X,
+        y,
         test_size=0.2,
         random_state=42,
         stratify=y
@@ -93,7 +97,7 @@ def modeling_page():
     st.session_state["feature_columns"] = X.columns.tolist()
 
     # =========================
-    # MODELS
+    # MODEL DEFINISI
     # =========================
     models = {
         "Logistic Regression": LogisticRegression(max_iter=1000),
@@ -117,7 +121,7 @@ def modeling_page():
     best_name = None
 
     # =========================
-    # TRAINING
+    # TRAINING & EVALUASI
     # =========================
     for name, model in models.items():
 
