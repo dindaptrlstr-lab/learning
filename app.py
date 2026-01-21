@@ -38,8 +38,8 @@ section[data-testid="stSidebar"] {
 st.title("Machine Learning Classification Dashboard")
 
 st.caption(
-    "Dashboard analisis dan klasifikasi data kesehatan dan lingkungan "
-    "menggunakan beberapa algoritma Machine Learning."
+    "Dashboard untuk analisis dan klasifikasi data kesehatan serta lingkungan "
+    "dengan pendekatan Machine Learning."
 )
 
 st.markdown("---")
@@ -85,4 +85,5 @@ with tabs[5]:
 
 with tabs[6]:
     contact_page()
+
 
