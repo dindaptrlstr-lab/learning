@@ -12,9 +12,7 @@ def prediction_page():
     st.markdown("""
     Halaman ini digunakan untuk melakukan **prediksi data baru**
     menggunakan **model terbaik** yang diperoleh dari proses training
-    pada menu **Machine Learning**.
-
-    Model dipilih berdasarkan **F1-Score terbaik** dan digunakan kembali
+    pada menu **Machine Learning**. Model dipilih berdasarkan **F1-Score terbaik** dan digunakan kembali
     secara konsisten untuk proses inferensi.
     """)
     st.markdown("---")
@@ -121,3 +119,4 @@ def prediction_page():
         "- Hasil prediksi digunakan untuk **analisis dan pembelajaran**.\n"
         "- Model tidak dimaksudkan sebagai alat diagnosis medis."
     )
+
