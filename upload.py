@@ -6,7 +6,7 @@ import os
 def upload_page():
 
     # =========================
-    # TITLE
+    # JUDUL HALAMAN
     # =========================
     st.subheader("Pilih Dataset")
 
@@ -18,39 +18,39 @@ def upload_page():
     st.markdown("<br>", unsafe_allow_html=True)
 
     # =========================
-    # CARD STYLE
+    # STYLE CARD (NETRAL, NYATU BANNER)
     # =========================
     st.markdown("""
     <style>
     .dataset-card {
-        background-color: #E7BEF8;
+        background-color: #EEF4FB;   /* sama dengan banner UAS */
         padding: 24px;
-        border-radius: 18px;
+        border-radius: 16px;
         height: 100%;
+        border: 1px solid #E0E6ED;
     }
 
     .dataset-title {
-        color: #F2619C;
-        font-weight: 700;
-        font-size: 18px;
+        font-weight: 600;
+        font-size: 17px;
+        margin-bottom: 6px;
     }
 
     .dataset-desc {
         font-size: 14px;
-        color: #333333;
-        margin-bottom: 12px;
+        margin-bottom: 10px;
+        color: #444444;
     }
 
     .dataset-meta {
         font-size: 13px;
         color: #555555;
-        margin-bottom: 16px;
     }
     </style>
     """, unsafe_allow_html=True)
 
     # =========================
-    # DATASET CONFIG
+    # KONFIGURASI DATASET
     # =========================
     datasets = {
         "water": {
@@ -72,7 +72,7 @@ def upload_page():
     col1, col2 = st.columns(2)
 
     # =========================
-    # CARD 1 — WATER
+    # CARD DATASET AIR
     # =========================
     with col1:
         st.markdown(f"""
@@ -80,8 +80,8 @@ def upload_page():
             <div class="dataset-title">{datasets['water']['title']}</div>
             <div class="dataset-desc">{datasets['water']['desc']}</div>
             <div class="dataset-meta">
-                📌 Domain: {datasets['water']['type']}<br>
-                🎯 Target: {datasets['water']['target']}
+                Domain: {datasets['water']['type']}<br>
+                Target: <code>{datasets['water']['target']}</code>
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -90,7 +90,7 @@ def upload_page():
             load_dataset(datasets["water"])
 
     # =========================
-    # CARD 2 — CARDIO
+    # CARD DATASET KESEHATAN
     # =========================
     with col2:
         st.markdown(f"""
@@ -98,8 +98,8 @@ def upload_page():
             <div class="dataset-title">{datasets['cardio']['title']}</div>
             <div class="dataset-desc">{datasets['cardio']['desc']}</div>
             <div class="dataset-meta">
-                📌 Domain: {datasets['cardio']['type']}<br>
-                🎯 Target: {datasets['cardio']['target']}
+                Domain: {datasets['cardio']['type']}<br>
+                Target: <code>{datasets['cardio']['target']}</code>
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -111,23 +111,26 @@ def upload_page():
 def load_dataset(config):
 
     # =========================
-    # LOAD FILE
+    # CEK FILE
     # =========================
     if not os.path.exists(config["file"]):
         st.error(f"File `{config['file']}` tidak ditemukan.")
         return
 
+    # =========================
+    # LOAD DATA
+    # =========================
     df = pd.read_csv(config["file"], sep=None, engine="python")
 
     # =========================
-    # RESET STATE
+    # RESET STATE LAMA
     # =========================
     for key in ["best_model", "scaler", "feature_columns"]:
         if key in st.session_state:
             del st.session_state[key]
 
     # =========================
-    # SAVE STATE
+    # SIMPAN KE SESSION STATE
     # =========================
     st.session_state["df"] = df
     st.session_state["dataset_name"] = config["file"]
@@ -139,5 +142,5 @@ def load_dataset(config):
     # =========================
     st.success(f"Dataset **{config['title']}** berhasil dimuat")
 
-    with st.expander("🔍 Preview 5 Baris Pertama"):
+    with st.expander("Lihat 5 baris pertama dataset"):
         st.dataframe(df.head(), use_container_width=True)
