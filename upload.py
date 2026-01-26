@@ -1,78 +1,92 @@
 import streamlit as st
 import pandas as pd
+import os
 
 
 def upload_page():
-    st.subheader("Upload Dataset")
+
+    st.subheader("Pilih Dataset")
 
     st.write(
-        "Unggah dataset dalam format **CSV** untuk memulai "
-        "proses analisis dan pemodelan Machine Learning."
+        "Pilih dataset yang akan digunakan untuk proses "
+        "**analisis dan pemodelan Machine Learning**."
     )
 
-    uploaded_file = st.file_uploader(
-        "Upload file CSV",
-        type=["csv"],
-        label_visibility="collapsed"
-    )
-
-    if uploaded_file is not None:
-
-        # =========================
-        # BACA CSV (AUTO DELIMITER)
-        # =========================
-        try:
-            df = pd.read_csv(uploaded_file, sep=None, engine="python")
-        except Exception:
-            st.error("❌ Dataset gagal dibaca. Pastikan format CSV benar.")
-            return
-
-        # =========================
-        # RESET STATE LAMA (PENTING!)
-        # =========================
-        keys_to_reset = [
-            "best_model",
-            "scaler",
-            "feature_columns",
-            "target_col",
-            "dataset_type"
+    # =========================
+    # PILIH DATASET
+    # =========================
+    dataset_option = st.selectbox(
+        "Dataset tersedia",
+        [
+            "Pilih dataset",
+            "Water Potability Dataset",
+            "Cardiovascular Disease Dataset"
         ]
+    )
 
-        for key in keys_to_reset:
-            if key in st.session_state:
-                del st.session_state[key]
+    # =========================
+    # JIKA BELUM PILIH
+    # =========================
+    if dataset_option == "Pilih dataset":
+        st.info("Silakan pilih salah satu dataset untuk melanjutkan.")
+        return
 
-        # =========================
-        # SIMPAN DATASET
-        # =========================
-        st.session_state["df"] = df
-        st.session_state["dataset_name"] = uploaded_file.name
+    # =========================
+    # MAPPING DATASET
+    # =========================
+    dataset_config = {
+        "Water Potability Dataset": {
+            "file": "water_potability.csv",
+            "target": "Potability",
+            "type": "Lingkungan"
+        },
+        "Cardiovascular Disease Dataset": {
+            "file": "cardio_train.csv",
+            "target": "cardio",
+            "type": "Kesehatan"
+        }
+    }
 
-        # =========================
-        # TARGET & TIPE DATASET
-        # =========================
-        if uploaded_file.name == "water_potability.csv":
-            st.session_state["target_col"] = "Potability"
-            st.session_state["dataset_type"] = "Lingkungan"
+    selected = dataset_config[dataset_option]
+    file_path = selected["file"]
 
-        elif uploaded_file.name == "cardio_train.csv":
-            st.session_state["target_col"] = "cardio"
-            st.session_state["dataset_type"] = "Kesehatan"
+    # =========================
+    # LOAD DATASET
+    # =========================
+    if not os.path.exists(file_path):
+        st.error(f"File `{file_path}` tidak ditemukan di server.")
+        return
 
-        else:
-            st.warning(
-                "Dataset berhasil dimuat, tetapi target belum dikenali. "
-                "Silakan pastikan struktur dataset sesuai."
-            )
+    df = pd.read_csv(file_path, sep=None, engine="python")
 
-        # =========================
-        # FEEDBACK KE USER
-        # =========================
-        st.success("✅ Dataset berhasil dimuat dan state diperbarui")
+    # =========================
+    # RESET STATE LAMA
+    # =========================
+    keys_to_reset = [
+        "best_model",
+        "scaler",
+        "feature_columns"
+    ]
 
-        with st.expander("🔍 Lihat 5 Baris Pertama Dataset"):
-            st.dataframe(
-                df.head(),
-                use_container_width=True
-            )
-            
+    for key in keys_to_reset:
+        if key in st.session_state:
+            del st.session_state[key]
+
+    # =========================
+    # SIMPAN KE SESSION STATE
+    # =========================
+    st.session_state["df"] = df
+    st.session_state["dataset_name"] = file_path
+    st.session_state["target_col"] = selected["target"]
+    st.session_state["dataset_type"] = selected["type"]
+
+    # =========================
+    # FEEDBACK
+    # =========================
+    st.success(f"✅ Dataset **{dataset_option}** berhasil dimuat")
+
+    # =========================
+    # PREVIEW DATA
+    # =========================
+    with st.expander("🔍 Lihat 5 Baris Pertama Dataset"):
+        st.dataframe(df.head(), use_container_width=True)
